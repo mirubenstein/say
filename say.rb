@@ -18,22 +18,32 @@ class Say
     return 'zero' if @number.zero?
     highest_number_less_than = NUMBERS.keys.find { |n| n <= @number }
     multiplier = @number / highest_number_less_than
-    if multiplier > 0 && highest_number_less_than > 99
-      @number -= highest_number_less_than * multiplier
-      @number_string << "#{Say.new(multiplier).in_english} "
-      @number_string << "#{NUMBERS[highest_number_less_than]} "
-    else
-      @number -= highest_number_less_than
-      if highest_number_less_than.between? 20, 90
-        @number_string << "#{NUMBERS[highest_number_less_than]}-"
-      else
-        @number_string << "#{NUMBERS[highest_number_less_than]} "
-      end
-    end
+    number_word highest_number_less_than, multiplier
     if @number.zero?
-      @number_string.gsub(/(\s|-)$/, '')
+      @number_string.gsub /(\s|-)$/, ''
     else
       in_english
+    end
+  end
+
+  private
+
+  def number_word(number, multiplier)
+    if multiplier > 0 && number > 99
+      @number -= number * multiplier
+      @number_string << "#{Say.new(multiplier).in_english} "
+      @number_string << "#{NUMBERS[number]} "
+    else
+      @number -= number
+      @number_string << number_string(number)
+    end
+  end
+
+  def number_string(number)
+    if number.between? 20, 90
+      "#{NUMBERS[number]}-"
+    else
+      "#{NUMBERS[number]} "
     end
   end
 end
